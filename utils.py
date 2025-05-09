@@ -63,4 +63,5 @@ def is_allowed_folder(folder_name: str) -> bool:
             or folder_name == "venv"
             or folder_name == "__pycache__"
             or folder_name.endswith("undodir")
+            or folder_name.endswith("target")
     )

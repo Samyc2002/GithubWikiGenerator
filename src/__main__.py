@@ -1,7 +1,9 @@
 import os
 import argparse
+import pathlib
+
 from progress.bar import ChargingBar
-from scan_repo import scan_repo
+from .scan_repo import scan_repo
 from .generate_wiki import generate_wiki
 from .utils import delete_dir, count_processable_files
 
@@ -28,7 +30,7 @@ def main() -> None:
     print(f"Found {total_files} files to analyze.")
 
     # Create progress bar
-    progress_bar = ChargingBar(f"Scanning repository: {args.repo}", max=total_files, suffix='%(index)d/%(max)d files (%(percent).1f%%)')
+    progress_bar = ChargingBar(f"Scanning repository: {pathlib.Path(args.repo).name or args.repo}", max=total_files, suffix='%(index)d/%(max)d files (%(percent).1f%%)')
     # with tqdm(total=total_files, desc=f"Scanning repository: {args.repo}") as progress_bar:
     context = scan_repo(args.repo, progress_bar)
 

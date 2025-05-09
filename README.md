@@ -2,7 +2,7 @@
 
 A small tool to generate GitHub Wiki Pages for documenting code file by file.
 
-Ever had the thought any of these?
+Ever had any of these thoughts?
 - I wish I could have someone document my code.
 - I wish there was an explanation for each file in this new codebase.
 - Man I need to go through all these files to understand what they do.

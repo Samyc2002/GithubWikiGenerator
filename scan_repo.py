@@ -1,5 +1,5 @@
-from tqdm import tqdm
 import pathlib
+from progress.bar import ChargingBar
 from get_code_summary import CodeAnalyzer
 from utils import is_allowed_file, is_allowed_folder, count_processable_files
 
@@ -25,10 +25,11 @@ def read_file(file_path: str) -> dict:
     return metadata
 
 
-def list_directory_contents(path=".", progress_bar=None) -> dict:
+def list_directory_contents(path=".", progress_bar: ChargingBar = None) -> dict:
     """
     Get the contents of a directory and its subdirectories.
     :param path: The path to the directory to scan.
+    :param progress_bar: A progress bar to show the scanning progress.
     :return: A dictionary with the file names as keys and their descriptions as values.
     """
     directory = pathlib.Path(path)
@@ -39,18 +40,19 @@ def list_directory_contents(path=".", progress_bar=None) -> dict:
             file_metadata = read_file(f"{path}/{item.name}")
             files[file_metadata["name"]] = file_metadata["metadata"]["description"]
             if progress_bar:
-                progress_bar.update(1)
+                progress_bar.next()
         elif item.is_dir() and is_allowed_folder(item.name):
-            files_in_dir = list_directory_contents(f"{path}/{item.name}")
+            files_in_dir = list_directory_contents(f"{path}/{item.name}", progress_bar)
             files[item.name] = files_in_dir
 
     return files
 
 
-def scan_repo(repo_path: str) -> dict:
+def scan_repo(repo_path: str, progress_bar: ChargingBar = None) -> dict:
     """
     Scan the GitHub repository for all files and directories.
     :param repo_path: The path to the Git repository.
+    :param progress_bar: A progress bar to show the scanning progress.
     :return: A list of files and directories and their contents in the repository.
     """
     # Check if the provided path is a valid directory
@@ -58,12 +60,7 @@ def scan_repo(repo_path: str) -> dict:
         raise ValueError(
             f"The provided path is not a valid directory: {repo_path}")
 
-    total_files = count_processable_files(repo_path)
-    print(f"Found {total_files} files to process")
-
-    # Create progress bar
-    with tqdm(total=total_files, desc="Scanning files") as progress_bar:
-        # List all files and directories in the repo
-        contents = list_directory_contents(repo_path, progress_bar)
+    # List all files and directories in the repo
+    contents = list_directory_contents(repo_path, progress_bar)
 
     return contents

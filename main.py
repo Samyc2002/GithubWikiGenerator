@@ -1,8 +1,9 @@
 import os
 import argparse
+from progress.bar import ChargingBar
 from scan_repo import scan_repo
 from generate_wiki import generate_wiki
-from utils import delete_dir
+from utils import delete_dir, count_processable_files
 
 
 def main() -> None:
@@ -19,13 +20,19 @@ def main() -> None:
         help="The path to the output directory where the wiki pages will be saved (in .md format)",
     )
     args = parser.parse_args()
-    delete_dir(args.output)
-
-    print(f"Scanning repository: {args.repo}")
-    context = scan_repo(args.repo)
 
     output_path = str(os.path.join(args.repo, args.output))
-    print(f"Generating Wiki pages in: {output_path}")
+    delete_dir(output_path)
+
+    total_files = count_processable_files(args.repo)
+    print(f"Found {total_files} files to analyze.")
+
+    # Create progress bar
+    progress_bar = ChargingBar(f"Scanning repository: {args.repo}", max=total_files, suffix='%(index)d/%(max)d files (%(percent).1f%%)')
+    # with tqdm(total=total_files, desc=f"Scanning repository: {args.repo}") as progress_bar:
+    context = scan_repo(args.repo, progress_bar)
+
+    print(f"\nGenerating Wiki pages in: {output_path}")
     generate_wiki(context, output_path)
 
 

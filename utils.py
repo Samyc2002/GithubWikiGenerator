@@ -1,6 +1,7 @@
 import os
 import pathlib
 import re
+import shutil
 
 
 def count_processable_files(path=".") -> int:
@@ -22,16 +23,9 @@ def count_processable_files(path=".") -> int:
 
 
 def delete_dir(path: str) -> None:
-    if not os.path.exists(path):
-        return
-
-    for item in os.listdir(path):
-        item_path = os.path.join(path, item)
-        if os.path.isdir(item_path):
-            delete_dir(item_path)
-        elif os.path.isfile(item_path):
-            os.remove(item_path)
-    os.removedirs(path)
+    dir_path = pathlib.Path(path)
+    if dir_path.exists():
+        shutil.rmtree(dir_path, ignore_errors=True)
 
 
 # List of file extensions to exclude

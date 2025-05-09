@@ -2,8 +2,8 @@ import os
 import argparse
 from progress.bar import ChargingBar
 from scan_repo import scan_repo
-from generate_wiki import generate_wiki
-from utils import delete_dir, count_processable_files
+from .generate_wiki import generate_wiki
+from .utils import delete_dir, count_processable_files
 
 
 def main() -> None:

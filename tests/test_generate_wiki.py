@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 from unittest.mock import patch, mock_open, MagicMock
-import generate_wiki
+import src.generate_wiki as generate_wiki
 
 class TestGenerateWiki(unittest.TestCase):
     @patch('os.makedirs')
@@ -49,7 +49,7 @@ class TestGenerateWiki(unittest.TestCase):
                     with open(file_path, "w", encoding="utf-8") as wiki_file:
                         wiki_file.write(context[item])
 
-        with patch('generate_wiki.generate_wiki', side_effect=mocked_implementation):
+        with patch('src.generate_wiki.generate_wiki', side_effect=mocked_implementation):
             generate_wiki.generate_wiki(context, "output_path")
 
             # Verify the file was created

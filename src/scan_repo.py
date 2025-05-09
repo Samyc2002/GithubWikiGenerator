@@ -1,7 +1,7 @@
 import pathlib
 from progress.bar import ChargingBar
-from get_code_summary import CodeAnalyzer
-from utils import is_allowed_file, is_allowed_folder, count_processable_files
+from .get_code_summary import CodeAnalyzer
+from .utils import is_allowed_file, is_allowed_folder
 
 
 def read_file(file_path: str) -> dict:

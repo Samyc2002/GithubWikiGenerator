@@ -4,14 +4,12 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 from unittest.mock import patch, MagicMock
-import pathlib
-from scan_repo import read_file, list_directory_contents, scan_repo
-from utils import is_allowed_file, is_allowed_folder
+from src.scan_repo import read_file, scan_repo
 
 
 class TestScanRepo(unittest.TestCase):
     @patch('pathlib.Path.is_file')
-    @patch('scan_repo.CodeAnalyzer')
+    @patch('src.scan_repo.CodeAnalyzer')
     def test_read_file(self, mock_analyzer, mock_is_file):
         # Setup mocks
         mock_is_file.return_value = True
@@ -30,7 +28,7 @@ class TestScanRepo(unittest.TestCase):
             read_file("invalid_file.py")
 
     @patch('pathlib.Path.is_dir')
-    @patch('scan_repo.list_directory_contents')
+    @patch('src.scan_repo.list_directory_contents')
     def test_scan_repo(self, mock_list_contents, mock_is_dir):
         # Setup mocks
         mock_is_dir.return_value = True

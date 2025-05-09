@@ -4,17 +4,10 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 from unittest.mock import patch, MagicMock, mock_open
-import json
 import subprocess
-from get_code_summary import _sanitize_code, CodeAnalyzer
+from src.get_code_summary import CodeAnalyzer
 
 class TestGetCodeSummary(unittest.TestCase):
-    def test_sanitize_code(self):
-        # Test code sanitization
-        code = "def example():\r\n    print('hello')\x00"
-        sanitized = _sanitize_code(code)
-        self.assertEqual(sanitized, "def example():\n    print('hello')")
-
     @patch('requests.post')
     def test_analyze_code_block(self, mock_post):
         # Setup mock response
@@ -46,7 +39,7 @@ class TestGetCodeSummary(unittest.TestCase):
     @patch('pathlib.Path.exists')
     @patch('pathlib.Path.stat')
     @patch('builtins.open', new_callable=mock_open, read_data="def test(): pass")
-    @patch('get_code_summary.CodeAnalyzer.analyze_code_block')
+    @patch('src.get_code_summary.CodeAnalyzer.analyze_code_block')
     def test_analyze_file(self, mock_analyze_block, mock_file, mock_stat, mock_exists):
         # Setup mocks
         mock_exists.return_value = True

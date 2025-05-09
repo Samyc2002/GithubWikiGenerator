@@ -21,3 +21,42 @@ A small tool to generate Github Wiki Pages for documenting code file by file.
 ## Available parameters
 - `--repo`: Path to the directory containing the code files. Must be provided.
 - `--output`: Path to the output directory for the wiki pages. Default is `wiki`.
+
+## Prerequisites
+
+- Python 3.x
+- pip
+- Git (for cloning the repository)
+- Markdown (for generating wiki pages)
+- A Gemini API key (for generating wiki pages)
+
+## FAQs
+
+### Q: How do I add the Gemini API key?
+A: You can add the Gemini API key by setting the `GEMINI_API_KEY` environment variable in a `.env` file in the root directory of the project. The file should look like this:
+```
+GEMINI_API_KEY=your_api_key_here
+```
+
+### Q: How do I run the script?
+A: You can run the script by executing the following command in your terminal:
+```bash
+python main.py --repo path/to/your/repo --output optional/path/to/output
+```
+
+### Q: How do I generate wiki pages for a specific file?
+A: You can generate wiki pages for a specific file by providing the path to the file in the `--repo` parameter. The script will generate a wiki page for that file only.
+
+### Q: How do I generate wiki pages for all files in a directory?
+A: You can generate wiki pages for all files in a directory by providing the path to the directory in the `--repo` parameter. The script will generate wiki pages for all files in that directory and its subdirectories.
+
+### Q: How do I generate wiki pages for a specific language?
+A: The script is language-agnostic and will generate wiki pages for all files in the specified directory, regardless of their language. However, you can filter the files by language by modifying the script to include only the desired file extensions.
+
+## Future Improvements
+- An ignore file for excluding certain files or directories from the wiki generation process.
+- Using GitHub repository url along with local path to generate wiki pages.
+
+## Want more features?
+If you have any suggestions for new features or improvements, please feel free to open an issue or submit a pull request. We welcome contributions from the community!
+PS: Please make sure to add tests for big modules and functions.

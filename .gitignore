@@ -1,3 +1,4 @@
 wiki/
 .idea/
 __pycache__/
+.env

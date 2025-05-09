@@ -1,23 +1,12 @@
+from dotenv import load_dotenv
 import json
+import os
 import subprocess
 import pathlib
 import time
 import requests
 
-
-def _check_gh_copilot() -> None:
-    try:
-        subprocess.run(
-            ["gh", "copilot", "--version"],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-    except subprocess.CalledProcessError:
-        raise RuntimeError(
-            "GitHub Copilot CLI is not installed or not authenticated. "
-            "Please run 'gh auth login' and ensure Copilot is set up."
-        )
+load_dotenv()
 
 
 def _sanitize_code(code: str) -> str:
@@ -29,7 +18,6 @@ class CodeAnalyzer:
     def __init__(self, timeout: int = 45, max_retries: int = 3) -> None:
         self.timeout = timeout
         self.max_retries = max_retries
-        _check_gh_copilot()
 
     def analyze_code_block(self, code: str, filename: str, retry_count: int = 0) -> str:
         code = _sanitize_code(code)
@@ -74,7 +62,7 @@ class CodeAnalyzer:
                 }]
             }
             response = requests.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBVMM849BVYNVYcTNDagpWEohOiLkfzAjw",
+                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={os.environ["GEMINI_API_KEY"]}",
                 data=json.dumps(payload),
                 headers={
                     "Content-Type": "application/json",

@@ -5,7 +5,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 import unittest
 from unittest.mock import patch, MagicMock
 import pathlib
-from scan_repo import is_allowed_file, is_allowed_folder, read_file, list_directory_contents, scan_repo
+from scan_repo import read_file, list_directory_contents, scan_repo
+from utils import is_allowed_file, is_allowed_folder
+
 
 class TestScanRepo(unittest.TestCase):
     def test_is_allowed_file(self):

@@ -1,19 +1,6 @@
 import os
 
 
-def delete_dir(path: str) -> None:
-    if not os.path.exists(path):
-        return
-
-    for item in os.listdir(path):
-        item_path = os.path.join(path, item)
-        if os.path.isdir(item_path):
-            delete_dir(item_path)
-        elif os.path.isfile(item_path):
-            os.remove(item_path)
-    os.removedirs(path)
-
-
 def generate_wiki(context: dict, output_path: str) -> None:
     """
     Generate Wiki pages for the repository.

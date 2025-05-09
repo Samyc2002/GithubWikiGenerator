@@ -1,38 +1,7 @@
+from tqdm import tqdm
 import pathlib
-import re
 from get_code_summary import CodeAnalyzer
-
-
-# List of file extensions to exclude
-excluded_files = ["pem", "pack", "crt", "idx"]
-
-
-def is_allowed_file(filename: str) -> bool:
-    """
-    Check if the file is allowed based on its name.
-    :type filename: Name of the file to check
-    :return: True if the file is allowed, False otherwise.
-    """
-    if filename.startswith("."):
-        return False
-
-    pattern = r"^(?!.*\.(" + "|".join(excluded_files) + ")$).*$"
-    return bool(re.match(pattern, filename))
-
-
-def is_allowed_folder(folder_name: str) -> bool:
-    """
-    Check if the folder is allowed based on its name.
-    :type folder_name: Name of the folder to check
-    :return: True if the folder is allowed, False otherwise.
-    """
-    return not (
-            folder_name.startswith(".")
-            or folder_name == "node_modules"
-            or folder_name == "venv"
-            or folder_name == "__pycache__"
-            or folder_name.endswith("undodir")
-    )
+from utils import is_allowed_file, is_allowed_folder, count_processable_files
 
 
 def read_file(file_path: str) -> dict:
@@ -56,7 +25,7 @@ def read_file(file_path: str) -> dict:
     return metadata
 
 
-def list_directory_contents(path=".") -> dict:
+def list_directory_contents(path=".", progress_bar=None) -> dict:
     """
     Get the contents of a directory and its subdirectories.
     :param path: The path to the directory to scan.
@@ -69,6 +38,8 @@ def list_directory_contents(path=".") -> dict:
         if item.is_file() and is_allowed_file(item.name):
             file_metadata = read_file(f"{path}/{item.name}")
             files[file_metadata["name"]] = file_metadata["metadata"]["description"]
+            if progress_bar:
+                progress_bar.update(1)
         elif item.is_dir() and is_allowed_folder(item.name):
             files_in_dir = list_directory_contents(f"{path}/{item.name}")
             files[item.name] = files_in_dir
@@ -87,7 +58,12 @@ def scan_repo(repo_path: str) -> dict:
         raise ValueError(
             f"The provided path is not a valid directory: {repo_path}")
 
-    # List all files and directories in the repo
-    contents = list_directory_contents(repo_path)
+    total_files = count_processable_files(repo_path)
+    print(f"Found {total_files} files to process")
+
+    # Create progress bar
+    with tqdm(total=total_files, desc="Scanning files") as progress_bar:
+        # List all files and directories in the repo
+        contents = list_directory_contents(repo_path, progress_bar)
 
     return contents

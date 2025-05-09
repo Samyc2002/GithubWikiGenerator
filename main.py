@@ -1,7 +1,8 @@
 import os
 import argparse
 from scan_repo import scan_repo
-from generate_wiki import generate_wiki, delete_dir
+from generate_wiki import generate_wiki
+from utils import delete_dir
 
 
 def main() -> None:

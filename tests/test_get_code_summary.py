@@ -6,22 +6,9 @@ import unittest
 from unittest.mock import patch, MagicMock, mock_open
 import json
 import subprocess
-from get_code_summary import _check_gh_copilot, _sanitize_code, CodeAnalyzer
+from get_code_summary import _sanitize_code, CodeAnalyzer
 
 class TestGetCodeSummary(unittest.TestCase):
-    @patch('subprocess.run')
-    def test_check_gh_copilot_success(self, mock_run):
-        # Test successful check
-        _check_gh_copilot()
-        mock_run.assert_called_once()
-
-    @patch('subprocess.run')
-    def test_check_gh_copilot_failure(self, mock_run):
-        # Test failure case
-        mock_run.side_effect = subprocess.CalledProcessError(1, "gh")
-        with self.assertRaises(RuntimeError):
-            _check_gh_copilot()
-
     def test_sanitize_code(self):
         # Test code sanitization
         code = "def example():\r\n    print('hello')\x00"

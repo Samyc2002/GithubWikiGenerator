@@ -1,5 +1,7 @@
 import os
 
+from src.utils import delete_dir
+
 
 def generate_wiki(context: dict, output_path: str) -> None:
     """
@@ -14,6 +16,8 @@ def generate_wiki(context: dict, output_path: str) -> None:
             # This is a folder
             folder_path = os.path.join(output_path, item)
             generate_wiki(context[item], folder_path)
+            if len(os.listdir(folder_path)) == 0:
+                delete_dir(folder_path)
         elif isinstance(context[item], str):
             # This is a file
             file_name = ".".join(item.split(".")[:-1]) + ".md"

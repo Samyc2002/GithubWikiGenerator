@@ -62,9 +62,10 @@ def clone_github_repo(github_url: str, auth_token: str = None) -> str:
     return clone_dir
 
 
-def list_directory_contents(path=".", progress_bar: ChargingBar = None) -> dict:
+def list_directory_contents(path=".", progress_bar: ChargingBar = None, ignore_file_path: str | None = None) -> dict:
     """
     Get the contents of a directory and its subdirectories.
+    :param ignore_file_path: Path to the ignore file.
     :param path: The path to the directory to scan.
     :param progress_bar: A progress bar to show the scanning progress.
     :return: A dictionary with the file names as keys and their descriptions as values.
@@ -73,21 +74,22 @@ def list_directory_contents(path=".", progress_bar: ChargingBar = None) -> dict:
 
     files = {}
     for item in directory.iterdir():
-        if item.is_file() and is_allowed_file(item.name):
+        if item.is_file() and is_allowed_file(item.name, ignore_file_path):
             file_metadata = read_file(f"{path}/{item.name}")
             files[file_metadata["name"]] = file_metadata["metadata"]["description"]
             if progress_bar:
                 progress_bar.next()
-        elif item.is_dir() and is_allowed_folder(item.name):
-            files_in_dir = list_directory_contents(f"{path}/{item.name}", progress_bar)
+        elif item.is_dir() and is_allowed_folder(item.name, ignore_file_path):
+            files_in_dir = list_directory_contents(f"{path}/{item.name}", progress_bar, ignore_file_path)
             files[item.name] = files_in_dir
 
     return files
 
 
-def scan_git_repo(repo_path: str) -> dict:
+def scan_git_repo(repo_path: str, ignore_file_path: str | None = None) -> dict:
     """
     Scan the Git repository for all files and directories.
+    :param ignore_file_path: Path to the ignore file.
     :param repo_path: The path to the Git repository.
     :return: A list of files and directories and their contents in the repository.
     """
@@ -102,15 +104,15 @@ def scan_git_repo(repo_path: str) -> dict:
     if not pathlib.Path(local_path).is_dir():
         raise ValueError(f"The provided path is not a valid directory: {local_path}")
 
-    total_files = count_processable_files(local_path)
-    print(f"Found {total_files} files to analyze.")
+    total_files, total_folders = count_processable_files(local_path, ignore_file_path)
+    print(f"Found {total_files} file{"s" if total_files > 1 else ""} in {total_folders} folder{"s" if total_folders > 1 else ""} to analyze.")
 
     # Create a progress bar
     progress_bar = ChargingBar(f"Scanning repository: {pathlib.Path(local_path).name or local_path}", max=total_files,
                                suffix='%(index)d/%(max)d files (%(percent).1f%%)')
 
     # List all files and directories in the repo
-    contents = list_directory_contents(local_path, progress_bar)
+    contents = list_directory_contents(local_path, progress_bar, ignore_file_path)
 
     # Clean up temporary directory
     parent_dir = os.path.dirname(local_path)
@@ -119,7 +121,7 @@ def scan_git_repo(repo_path: str) -> dict:
     return contents
 
 
-def scan_repo(repo_path: str, progress_bar: ChargingBar = None) -> dict:
+def scan_repo(repo_path: str, progress_bar: ChargingBar = None, ignore_file_path: str | None = None) -> dict:
     """
     Scan the GitHub repository for all files and directories.
     :param repo_path: The path to the Git repository.
@@ -134,6 +136,6 @@ def scan_repo(repo_path: str, progress_bar: ChargingBar = None) -> dict:
         return { f"{repo_path}": read_file(repo_path)["metadata"]["description"] }
 
     # List all files and directories in the repo
-    contents = list_directory_contents(repo_path, progress_bar)
+    contents = list_directory_contents(repo_path, progress_bar, ignore_file_path)
 
     return contents

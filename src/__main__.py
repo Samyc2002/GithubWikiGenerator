@@ -25,11 +25,17 @@ def main() -> None:
         default="wiki",
         help="The path to the output directory where the wiki pages will be saved (in .md format)",
     )
+    parser.add_argument(
+        "--ignore_file",
+        required=False,
+        default=None,
+        help="The path to the output directory where the wiki pages will be saved (in .md format)",
+    )
     args = parser.parse_args()
 
     if is_github_url(args.repo):
         delete_dir(args.output)
-        context = scan_git_repo(args.repo)
+        context = scan_git_repo(args.repo, args.ignore_file)
 
         print(f"\nGenerating Wiki pages in: {args.output}")
         generate_wiki(context, args.output)
@@ -42,12 +48,12 @@ def main() -> None:
 
     delete_dir(output_path)
 
-    total_files = count_processable_files(args.repo)
-    print(f"Found {total_files} file{"s" if total_files > 1 else ""} to analyze.")
+    total_files, total_folders = count_processable_files(args.repo, args.ignore_file)
+    print(f"Found {total_files} file{"s" if total_files > 1 else ""} in {total_folders} folder{"s" if total_folders > 1 else ""} to analyze.")
 
     # Create progress bar
     progress_bar = ChargingBar(f"Scanning repository: {pathlib.Path(args.repo).name or args.repo}", max=total_files, suffix='%(index)d/%(max)d files (%(percent).1f%%)')
-    context = scan_repo(args.repo, progress_bar)
+    context = scan_repo(args.repo, progress_bar, args.ignore_file)
 
     print(f"\nGenerating Wiki pages in: {output_path}")
     generate_wiki(context, output_path)

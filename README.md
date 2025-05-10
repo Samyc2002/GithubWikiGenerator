@@ -85,14 +85,17 @@ python -m src --repo path/to/your/repo --output optional/path/to/output
 ```
 
 ### Q: How do I generate wiki pages for a specific file?
-A: This is not possible at the moment. The script is designed to generate wiki pages for all files in the specified directory. This will be added soon in a future update.
+A: You can generate wiki pages for a specific file by providing the path to the file in the `--repo` parameter. The script will generate a wiki page for that file only.
+
+**NOTE**: This doesn't work with github repository URLs. The script will clone the repository and generate wiki pages for all files in that repository.
 
 ### Q: How do I generate wiki pages for all files in a directory?
 A: You can generate wiki pages for all files in a directory by providing the path to the directory in the `--repo` parameter. The script will generate wiki pages for all files in that directory and its subdirectories.
 
 ### Q: How do I generate wiki pages for a git repository?
 A: You can generate wiki pages for a git repository by providing the path to the repository in the `--repo` parameter. The script will clone the repository and generate wiki pages for all files in that repository.
-NOTE: The script can only access the github repository using the `GITHUB_AUTH_TOKEN`. If you don't have access to the repository, you will need to provide a personal access token with the appropriate permissions.
+
+**NOTE**: The script can only access the github repository using the `GITHUB_AUTH_TOKEN`. If you don't have access to the repository, you will need to provide a personal access token with the appropriate permissions.
 
 ### Q: How do I generate wiki pages for a specific language?
 A: The script is language-agnostic and will generate wiki pages for all files in the specified directory, regardless of their language. However, you can filter the files by language by modifying the script to include only the desired file extensions.

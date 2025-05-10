@@ -27,6 +27,9 @@ def count_processable_files(path=".") -> int:
     :param path: The path to the directory to scan.
     :return: The number of files that will be processed.
     """
+    if pathlib.Path(path).is_file():
+        return 1
+
     directory = pathlib.Path(path)
 
     count = 0

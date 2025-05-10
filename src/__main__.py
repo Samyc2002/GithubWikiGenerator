@@ -36,10 +36,14 @@ def main() -> None:
         return
 
     output_path = str(os.path.join(args.repo, args.output))
+
+    if os.path.isfile(args.repo):
+        output_path = args.output
+
     delete_dir(output_path)
 
     total_files = count_processable_files(args.repo)
-    print(f"Found {total_files} files to analyze.")
+    print(f"Found {total_files} file{"s" if total_files > 1 else ""} to analyze.")
 
     # Create progress bar
     progress_bar = ChargingBar(f"Scanning repository: {pathlib.Path(args.repo).name or args.repo}", max=total_files, suffix='%(index)d/%(max)d files (%(percent).1f%%)')

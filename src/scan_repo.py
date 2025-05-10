@@ -128,8 +128,10 @@ def scan_repo(repo_path: str, progress_bar: ChargingBar = None) -> dict:
     """
     # Check if the provided path is a valid directory
     if not pathlib.Path(repo_path).is_dir():
-        raise ValueError(
-            f"The provided path is not a valid directory: {repo_path}")
+        if not pathlib.Path(repo_path).is_file():
+            raise ValueError(f"The provided path is not a valid directory: {repo_path}")
+
+        return { f"{repo_path}": read_file(repo_path)["metadata"]["description"] }
 
     # List all files and directories in the repo
     contents = list_directory_contents(repo_path, progress_bar)

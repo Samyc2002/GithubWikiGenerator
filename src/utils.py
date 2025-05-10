@@ -2,6 +2,23 @@ import os
 import pathlib
 import re
 import shutil
+from urllib.parse import urlparse
+
+
+def is_github_url(url: str) -> bool:
+    """
+    Check if the given string is a GitHub URL.
+    :param url: The URL to check.
+    :return: True if the URL is a GitHub URL, False otherwise.
+    """
+    if not isinstance(url, str):
+        return False
+
+    if not url.startswith(("http://", "https://")):
+        return False
+
+    parsed_url = urlparse(url)
+    return parsed_url.netloc in ["github.com", "www.github.com"]
 
 
 def count_processable_files(path=".") -> int:
